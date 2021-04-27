@@ -1,0 +1,1506 @@
+  <!-- EMOTIV EPOC X BRAIN COMPUTER INTERFACE - CORTEX API WEBSOCKET LINK -->
+  <!-- NEURAL INTERFACE CONSOLE V1.0 -->
+  <!-- NAME: HONGBIN NI, ID: 10355343, University of Manchester - BEng (Hons) Mechatronic Engineering Year 3 Individual Project -->
+  
+  <!DOCTYPE html>
+  <meta charset="utf-8" />
+  <title>EMOTIV EPOC X Brain Computer Interface - Cortex API WebSocket Link</title>
+  <body style="background-color:black;">
+  <script language="javascript" type="text/javascript">
+  
+  //DECLARATIONS
+  var wsUri = "wss://localhost:6868";
+  var output;
+  var token;
+  var Command;
+  var Headset;
+  var ConnectionType;
+  var Mode;
+  var EEGrate;
+  var MemsRate;
+  var bandPosition;
+  var Status;
+  var Session;
+  var Streams;
+  var Title;
+  var Desc;
+  var Record;
+  var Folder;
+  var Format;
+  var Version;
+  var Keyword;
+  var OptOut;
+  var Label;
+  var Time;
+  var Value;
+  var Marker;
+  var SubjectName;
+  var City;
+  var CountryCode;
+  var DoB;
+  var Gender;
+  var AttribName;
+  var AttribValue;
+  var Subject
+  var QueryType;
+  var UID;
+  var Profile;
+  var ProfileNew;
+  var Detection;
+  var Action;
+  var PS;
+  var Signature;
+  
+  //AUTHENTICATION
+  var getCortexInfo = {id:1,jsonrpc:"2.0",method:"getCortexInfo"}
+  
+  var getUserLogin = {id:2,jsonrpc:"2.0",method:"getUserLogin"}
+  
+  var requestAccess = {id:3,jsonrpc: "2.0",method: "requestAccess",params: {
+        clientId: "ksvAgMbk1WSNywg3oAPmPCNTijXq4nqv7UW84M9n",
+        clientSecret: "SECRET"
+     }
+  }
+  
+  var hasAccessRight = {id:4,jsonrpc: "2.0",method: "hasAccessRight",params: {
+        clientId: "ksvAgMbk1WSNywg3oAPmPCNTijXq4nqv7UW84M9n",
+        clientSecret: "SECRET"
+      }
+  }
+  
+  var authorize = {id:5,jsonrpc: "2.0",method: "authorize",params: {
+        clientId: "ksvAgMbk1WSNywg3oAPmPCNTijXq4nqv7UW84M9n",
+        clientSecret: "SECRET"
+      }
+  }
+  
+  var generateNewToken = {id:6,jsonrpc: "2.0",method: "generateNewToken",params: {
+        cortexToken: "" + token + "",
+		clientId: "ksvAgMbk1WSNywg3oAPmPCNTijXq4nqv7UW84M9n",
+        clientSecret: "SECRET"
+      }
+  }
+  
+  var getUserInformation = {id:7,jsonrpc: "2.0",method: "getUserInformation",params: {cortexToken: "" + token + "",}}
+  
+  var getLicenseInfo = {id:8,jsonrpc: "2.0",method: "getLicenseInfo",params: {cortexToken: "" + token + "",}}
+  
+  //HEADSETS
+  var queryHeadsets = {id:10,jsonrpc:"2.0",method:"queryHeadsets"}
+  
+  var controlDevice = {id:11,jsonrpc: "2.0",method: "controlDevice",params: {
+        command: "" + Command + "",
+        headset: "" + Headset + "",
+		connectionType: "" + ConnectionType + ""
+      }
+  }
+  
+  var controlDeviceRefresh = {id:13,jsonrpc: "2.0",method: "controlDevice",params: {
+        command: "" + Command + "",
+      }
+  }
+  
+  var updateHeadset = {
+    id: 14,
+    jsonrpc: "2.0",
+    method: "updateHeadset",
+    params: {
+        cortexToken: "" + token + "",
+        headsetId: "" + Headset + "",
+        setting: {
+            mode: "" + Mode + "",
+            eegRate: "" + EEGrate + "",
+            memsRate: "" + MemsRate + ""
+        }
+    }
+  }
+  
+  var updateHeadsetCustomInfo = {
+    id: 15,
+    jsonrpc: "2.0",
+    method: "updateHeadsetCustomInfo",
+    params: {
+      cortexToken: "" + token + "",
+      headbandPosition: "" + bandPosition + "",
+      headsetId: "" + Headset + ""
+    }
+  }
+  
+  //SESSIONS
+  var createSession = {
+    id: 16,
+    jsonrpc: "2.0",
+    method: "createSession",
+    params: {
+        cortexToken: "" + token + "",
+        headset: "" + Headset + "",
+        status: "" + Status + ""
+    }
+  }
+  
+  var createSession = {
+    id: 17,
+    jsonrpc: "2.0",
+    method: "updateSession",
+    params: {
+        cortexToken: "" + token + "",
+        session: "" + Session + "",
+        status: "" + Status + ""
+    }
+  }
+  
+  var querySessions = {
+    id: 18,
+    jsonrpc: "2.0",
+    method: "querySessions",
+    params: {
+        cortexToken: "" + token + ""
+    }
+  }
+  
+  //DATA SUBSCRIPTION
+  var subscribe = {
+    id: 19,
+    jsonrpc: "2.0",
+    method: "subscribe",
+    params: {
+        cortexToken: "" + token + "",
+        session: "" + Session + "",
+        streams: ["" + Streams + ""]
+    }
+  }
+  
+  var unsubscribe = {
+    id: 20,
+    jsonrpc: "2.0",
+    method: "unsubscribe",
+    params: {
+        cortexToken: "" + token + "",
+        session: "" + Session + "",
+        streams: ["" + Streams + ""]
+    }
+  }
+  
+  //RECORDS
+  var createRecord = {
+    id: 21,
+    jsonrpc: "2.0",
+    method: "createRecord",
+    params: {
+        cortexToken: "" + token + "",
+        session: "" + Session + "",
+        title: "" + Title + "",
+		description: "" + Desc + ""
+    }
+  }
+  
+  var stopRecord = {
+    id: 22,
+    jsonrpc: "2.0",
+    method: "stopRecord",
+    params: {
+        cortexToken: "" + token + "",
+        session: "" + Session + "",
+    }
+  }
+  
+  var updateRecord = {
+    id: 23,
+    jsonrpc: "2.0",
+    method: "updateRecord",
+    params: {
+        cortexToken: "" + token + "",
+        record: "" + Record + "",
+        description: "" + Desc + ""
+    }
+  }
+  
+  var deleteRecord = {
+    id: 24,
+    jsonrpc: "2.0",
+    method: "deleteRecord",
+    params: {
+        cortexToken: "" + token + "",
+        records: ["" + Record + ""]
+    }
+  }
+  
+  var exportRecordCSV = {
+    id: 25,
+    jsonrpc: "2.0",
+    method: "exportRecord",
+    params: {
+        cortexToken: "" + token + "",
+        folder: "" + Folder + "",
+        format: "" + Format + "",
+        recordIds: ["" + Record + ""],
+        streamTypes: ["" + Streams + ""],
+        version: "" + Version + ""
+    }
+  }
+  
+  var exportRecordEDF = {
+    id: 26,
+    jsonrpc: "2.0",
+    method: "exportRecord",
+    params: {
+        cortexToken: "" + token + "",
+        folder: "" + Folder + "",
+        format: "" + Format + "",
+        recordIds: ["" + Record + ""],
+        streamTypes: ["" + Streams + ""],
+    }
+  }
+  
+  var queryRecords = {
+    id: 27,
+    jsonrpc: "2.0",
+    method: "queryRecords",
+    params: {
+        cortexToken: "" + token + "",
+        orderBy: [
+            { "startDatetime": "DESC" }
+        ],
+        query: {
+            "keyword": "" + Keyword + ""
+        },
+        includeSyncStatusInfo: true
+    }
+  }
+  
+  var getRecordInfos = {
+    id: 28,
+    jsonrpc: "2.0",
+    method: "getRecordInfos",
+    params: {
+        cortexToken: "" + token + "",
+        recordIds: ["" + Record + ""]
+    }
+  }
+  
+  var GetconfigOptOut = {
+    id: 29,
+    jsonrpc: "2.0",
+    method: "configOptOut",
+    params: {
+        cortexToken: "" + token + "",
+        status: "get"
+    }
+  }
+  
+  var SetconfigOptOut = {
+    id: 30,
+    jsonrpc: "2.0",
+    method: "configOptOut",
+    params: {
+        cortexToken: "" + token + "",
+        status: "set",
+        newOptOut: "" + OptOut + ""
+    }
+  }
+  
+  //MARKERS
+  var injectMarker = {
+    id: 31,
+    jsonrpc: "2.0",
+    method: "injectMarker",
+    params: {
+        cortexToken: "" + token + "",
+        label: "" + Label + "",
+        session: "" + Session + "",
+        time: "" + Time + "",
+        value: "" + Value + ""
+    }
+  }
+  
+  var updateMarker = {
+    id: 32,
+    jsonrpc: "2.0",
+    method: "updateMarker",
+    params: {
+        cortexToken: "" + token + "",
+        session: "" + Session + "",
+        markerId: "" + Marker + "",
+        time: "" + Time + ""
+    }
+  }
+  
+  //SUBJECTS
+  var createSubject = {
+    id: 33,
+    jsonrpc: "2.0",
+    method: "createSubject",
+    params: {
+        cortexToken: "" + token + "",
+        subjectName: "" + SubjectName + "",
+        city: "" + City + "",
+        countryCode: "" + CountryCode + "",
+        dateOfBirth: "" + DoB + "",
+        sex: "" + Gender + "",
+        attributes: [
+            {
+                name: "" + AttribName + "",
+                value: "" + AttribValue + ""
+            },
+        ]
+    }
+  }
+  
+  var updateSubject = {
+    id: 34,
+    jsonrpc: "2.0",
+    method: "updateSubject",
+    params: {
+        cortexToken: "" + token + "",
+        subjectName: "" + SubjectName + "",
+        city: "" + City + "",
+        countryCode: "" + CountryCode + "",
+        dateOfBirth: "" + DoB + "",
+        sex: "" + Gender + "",
+        attributes: [
+            {
+                name: "" + AttribName + "",
+                value: "" + AttribValue + ""
+            },
+        ]
+    }
+  }
+  
+  var deleteSubjects = {
+    id: 35,
+    jsonrpc: "2.0",
+    method: "deleteSubjects",
+    params: {
+        cortexToken: "" + token + "",
+        subjects: ["" + Subject + ""]
+    }
+  }
+  
+  var querySubjectsName = {
+    id: 36,
+    jsonrpc: "2.0",
+    method: "querySubjects",
+    params: {
+        cortexToken: "" + token + "",
+        query: {subjectName: "" + SubjectName + ""},
+        orderBy: [
+            {"subjectName": "ASC"}
+        ],
+    }
+  }
+  
+  var querySubjectsUID = {
+    id: 37,
+    jsonrpc: "2.0",
+    method: "querySubjects",
+    params: {
+        cortexToken: "" + token + "",
+        query: {uuid: "" + UID + ""},
+        orderBy: [
+            {"subjectName": "ASC"}
+        ],
+    }
+  }
+  
+  var getDemographicAttributes = {
+    id: 38,
+    jsonrpc: "2.0",
+    method: "getDemographicAttributes",
+    params: {
+        cortexToken: "" + token + ""
+    }
+  }
+  
+  //BCI
+  var queryProfile = {
+    id: 39,
+    jsonrpc: "2.0",
+    method: "queryProfile",
+    params: {
+        cortexToken: "" + token + ""
+    }
+  }
+  
+  var getCurrentProfile = {
+    id: 40,
+    jsonrpc: "2.0",
+    method: "getCurrentProfile",
+    params: {
+        cortexToken: "" + token + "",
+        headset: "" + Headset + ""
+    }
+ }
+ 
+ var setupProfileCLUS = {
+    id: 41,
+    jsonrpc: "2.0",
+    method: "setupProfile",
+    params: {
+        cortexToken: "" + token + "",
+        profile: "" + Profile + "",
+        status: "" + Status + "",
+		headset: "" + Headset + ""
+    }
+  }
+  
+  var setupProfileRename = {
+    id: 42,
+    jsonrpc: "2.0",
+    method: "setupProfile",
+    params: {
+        cortexToken: "" + token + "",
+        profile: "" + Profile + "",
+        status: "" + Status + "",
+		newProfileName: ""+ ProfileNew + ""
+    }
+  }
+  
+  var setupProfileDelete = {
+    id: 43,
+    jsonrpc: "2.0",
+    method: "setupProfile",
+    params: {
+        cortexToken: "" + token + "",
+        profile: "" + Profile + "",
+        status: "" + Status + ""
+    }
+  }
+  
+  var loadGuestProfile = {
+    id: 44,
+    jsonrpc: "2.0",
+    method: "loadGuestProfile",
+    params: {
+        cortexToken: "" + token + "",
+        headset: "" + Headset + ""
+    }
+  }
+  
+  var getDetectionInfo = {
+    id: 45,
+    jsonrpc: "2.0",
+    method: "getDetectionInfo",
+    params: {
+        detection: "" + Detection + ""
+    }
+}
+
+  var training = {
+    id: 46,
+    jsonrpc: "2.0",
+    method: "training",
+    params: {
+        action: "" + Action + "",
+        cortexToken: "" + token + "",
+        detection: "" + Detection + "",
+        session: "" + Session + "",
+        status: "" + Status + ""
+    }
+}
+  
+  //ADVANCED BCI
+  var getTrainedSignatureActionsProfile = {
+    id: 47,
+    jsonrpc: "2.0",
+    method: "getTrainedSignatureActions",
+    params: {
+        cortexToken: "" + token + "",
+        detection: "" + Detection + "",
+        profile: "" + Profile + ""
+    }
+  }
+  
+  var getTrainedSignatureActionsSession = {
+    id: 48,
+    jsonrpc: "2.0",
+    method: "getTrainedSignatureActions",
+    params: {
+        cortexToken: "" + token + "",
+        detection: "" + Detection + "",
+        session: "" + Session + ""
+    }
+  }
+  
+  var getTrainingTime = {
+    id: 49,
+    jsonrpc: "2.0",
+    method: "getTrainingTime",
+    params: {
+        cortexToken: "" + token + "",
+        detection: "" + Detection + "",
+        session: "" + Session + ""
+    }
+  }
+  
+  var facialExpressionSignatureTypeGet = {
+    id: 50,
+    jsonrpc: "2.0",
+    method: "facialExpressionSignatureType",
+    params: {
+        cortexToken: "" + token + "",
+        status: "" + Status + "",
+        session: "" + Session + "",
+		profile: "" + Profile + "",
+    }
+  }
+
+  var facialExpressionSignatureTypeSet = {
+    id: 51,
+    jsonrpc: "2.0",
+    method: "facialExpressionSignatureType",
+    params: {
+        cortexToken: "" + token + "",
+        status: "" + Status + "",
+        session: "" + Session + "",
+		profile: "" + Profile + "",
+        signature: "" + Signature + ""
+    }
+  }
+  
+  var facialExpressionThresholdGet = {
+    id: 52,
+    jsonrpc: "2.0",
+    method: "facialExpressionThreshold",
+    params: {
+        action: "" + Action + "",
+		profile: "" + Profile + "",
+        cortexToken: "" + token + "",
+        session: "" + Session + "",
+        status: "" + Status + ""
+    }
+  }
+  
+  var facialExpressionThresholdSet = {
+    id: 53,
+    jsonrpc: "2.0",
+    method: "facialExpressionThreshold",
+    params: {
+        action: "" + Action + "",
+		profile: "" + Profile + "",
+        cortexToken: "" + token + "",
+        session: "" + Session + "",
+        status: "" + Status + "",
+        value: "" + Value + ""
+    }
+  }
+  
+  var mentalCommandActiveActionGet = {
+    id: 54,
+    jsonrpc: "2.0",
+    method: "mentalCommandActiveAction",
+    params: {
+        cortexToken: "" + token + "",
+        profile: "" + Profile + "",
+		session: "" + Session + "",
+        status: "" + Status +  ""
+    }
+  }
+
+  var mentalCommandActiveActionSet = {
+    id: 55,
+    jsonrpc: "2.0",
+    method: "mentalCommandActiveAction",
+    params: {
+        actions: ["" + Action + ""],
+        cortexToken: "" + token + "",
+		profile: "" + Profile + "",
+        session: "" + Session + "",
+        status: "" + Status + ""
+    }
+  }
+  
+  var mentalCommandBrainMap = {
+    id: 56,
+    jsonrpc: "2.0",
+    method: "mentalCommandBrainMap",
+    params: {
+        cortexToken: "" + token + "",
+        profile: "" + Profile + "",
+        session: "" + Session + ""
+    }
+  }
+  
+  var mentalCommandGetSkillRating = {
+    id: 57,
+    jsonrpc: "2.0",
+    method: "mentalCommandGetSkillRating",
+    params: {
+        cortexToken: "" + token + "",
+		profile: "" + Profile + "",
+        session: "" + Session + "",
+        action: "" + Action + ""
+    }
+  }
+  
+  var mentalCommandTrainingThreshold = {
+    id: 58,
+    jsonrpc: "2.0",
+    method: "mentalCommandTrainingThreshold",
+    params: {
+        cortexToken: "" + token + "",
+		profile: "" + Profile + "",
+        session: "" + Session + ""
+    }
+  }
+  
+  var mentalCommandActionSensitivityGet = {
+    id: 59,
+    jsonrpc: "2.0",
+    method: "mentalCommandActionSensitivity",
+    params: {
+        cortexToken: "" + token + "",
+        profile: "" + Profile + "",
+		session: "" + Session + "",
+        status: "" + Status + ""
+    }
+  }
+  
+  var mentalCommandActionSensitivitySet = {
+    id: 60,
+    jsonrpc: "2.0",
+    method: "mentalCommandActionSensitivity",
+    params: {
+        cortexToken: "" + token + "",
+		profile: "" + Profile + "",
+        session: "" + Session + "",
+        status: "" + Status + "",
+        values: ["" + Value + ""]
+    }
+}
+  
+  //CORE *CODE IN THIS SECTION WAS MODIFIED BASED ON THE EXAMPLE CODE FROM WEBSOCKET.ORG
+  function init() {
+    output = document.getElementById("output");
+  }
+  
+  function initiateWebSocket() {
+    websocket = new WebSocket(wsUri);
+    websocket.onopen = function(evt) { onOpen(evt) };
+    websocket.onclose = function(evt) { onClose(evt) };
+    websocket.onmessage = function(evt) { onMessage(evt) };
+    websocket.onerror = function(evt) { onError(evt) };
+  }
+
+  function onOpen(evt) {
+    writeToScreen('<span style="color: green;">CORTEX API: CONNECTION ESTABLISHED. </span>');
+  }
+
+  function onClose(evt) {
+    writeToScreen('<span style="color: red;">CORTEX API: CONNECTION LOST. </span>');
+  }
+
+  function onMessage(evt) {
+    writeToScreen('<span style="color: yellow;">RECEIVED: ' + evt.data+'</span>');
+  }
+
+  function onError(evt) {
+    writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
+  }
+
+  function doSend(data) {
+    writeToScreen('<span style="color: green;">SENT: ' + (JSON.stringify(data)) +'</span>');
+    websocket.send(JSON.stringify(data));
+  }
+
+  function writeToScreen(data) {
+    var pre = document.createElement("p");
+    pre.style.wordWrap = "break-word";
+    pre.innerHTML = data;
+    output.appendChild(pre);
+  }
+  
+  //PROMPTS
+  function askToken() {
+    token = null;
+	token = prompt("Please enter your Cortex Token:");
+	if (token != null) {
+	  return token;
+	}
+  }
+  
+  function askCommand() {
+    Command = null;
+	Command = prompt("Please select command by entering 'connect', 'disconnect', or 'refresh':");
+	if (Command != null) {
+	  return Command;
+	}
+  }
+  
+  function askHeadset() {
+    Headset = null;
+	Headset = prompt("Please enter your headset ID:");
+	if (Headset != null) {
+	  return Headset;
+	}
+  }
+  
+  function askConnectionType() {
+    ConnectionType = null;
+	ConnectionType = prompt("Please select connection type by entering 'dongle', 'bluetooth', or 'usb cable':");
+	if (ConnectionType != null) {
+	  return ConnectionType;
+	}
+  }
+  
+  function askMode() {
+    Mode = null;
+    Mode = prompt("Please select mode by entering 'EPOC' or 'EPOCPLUS':");
+	if (Mode == "EPOC") {
+	  EEGrate = 128;
+	  MemsRate = 0;
+	  return Mode;
+	}
+	else if (Mode == "EPOCPLUS") {
+	  EEGrate = prompt("Please select EEG Rate by entering '128' or '256':");
+	  MemsRate = prompt("Please select Mems Rate by entering '0', '32', '64', or '128':");
+	  return Mode;
+	}
+  }
+  
+  function askbandPosition() {
+    bandPosition = null;
+    bandPosition = prompt("Please select EPOC X headband position by entering 'top' or 'back':");
+	if (bandPosition != null) {
+	  return bandPosition;
+	}
+  }
+  
+  function askStatusOA() {
+    Status = null;
+    Status = prompt("Please select session status by entering 'open' or 'active':");
+	if (Status != null) {
+	  return Status;
+	}
+  }
+  
+  function askStatusAC() {
+    Status = null;
+    Status = prompt("Please select session status by entering 'active' or 'closed':");
+	if (Status != null) {
+	  return Status;
+	}
+  }
+  
+  function askStatusCLUSRD() {
+    Status = null;
+	Status = prompt("Select profile setup status by entering 'create', 'load', 'unload', 'save', 'rename', or 'delete':");
+	if (Status != null) {
+	  return Status;
+	}
+  }
+  
+  function askSession() {
+    Session = null;
+    Session = prompt("Please enter session ID:");
+	if (Session != null) {
+	  return Session;
+	}
+  }
+  
+  function askStreams() {
+    Streams = null;
+    Streams = prompt("Please enter data streams separated by commas, 'eeg', 'mot', 'dev', 'eq', 'pow', 'met', 'com', 'fac', or 'sys' such as 'xxx','xxx' but using quotes instead:");
+	if (Streams != null) {
+	  return Streams;
+	}
+  }
+  
+  function askTitle() {
+    Title = null;
+    Title = prompt("Please enter a title:");
+	if (Title != null) {
+	  return Title;
+	}
+  }
+  
+  function askDesc() {
+    Desc = null;
+    Desc = prompt("Please enter description:");
+	if (Desc != null) {
+	  return Desc;
+	}
+  }
+  
+  function askRecord() {
+    Record = null;
+    Record = prompt("Please enter record ID:");
+	if (Record != null) {
+	  return Record;
+	  }
+  }
+  
+  function askRecords() {
+    Record = null;
+    Record = prompt("Please enter record IDs to delete, separated by commas such as 'xxx','xxx' but using quotes instead:");
+	if (Record != null) {
+	  return Record;
+	  }
+  }
+  
+  function askFolder() {
+    Folder = null;
+    Folder = prompt("Please enter folder path for file export:");
+	if (Folder != null) {
+	  return Folder;
+	}
+  }
+  
+  function askFormat() {
+    Format = null;
+    Format = prompt("Please enter format to export to, 'EDF' or 'CSV':");
+	if (Format != null) {
+	  return Format;
+	}
+  }
+  
+  function askVersion(){
+    Version = null;
+    Version = prompt("Please enter CSV version 'V1' or 'V2':");
+	if (Version != null) {
+	  return Version;
+	}
+  }
+  
+  function askKeyword(){
+    Keyword = null;
+    Keyword = prompt("Enter keywords to query:");
+	if (Keyword != null) {
+	  return Keyword;
+	}
+  }
+  
+  function askStatusOptOut() {
+    Status = null;
+    Status = prompt("Select OptOut action 'set' or 'get':");
+	if (Status != null) {
+	  return Status;
+	  }
+  }
+  
+  function askLabel() {
+    Label = null;
+	Label = prompt("Enter a marker label:");
+	if (Label != null) {
+	  return Label;
+	}
+  }
+  
+  function askTime() {
+    Time = null;
+	Time = prompt("Enter marker start time as an integer from 00:00:00 Thursday, 1 January 1970 UTC:");
+	if (Time != null) {
+	  return Time;
+	}
+  }
+  
+  function askValueMarker() {
+    Value = null;
+	Value = prompt("Enter a marker value as an integer:");
+	if (Value != null) {
+	  return Value;
+	}
+  }
+  
+  function askValueThreshold() {
+    Value = null;
+	Value = prompt("Enter an integer from 0-1000 as the new threshold for the action:");
+	if (Value != null) {
+	  return Value;
+	}
+  }
+  
+  function askValueSensitivity() {
+    Value = null;
+	Value = prompt("Enter integers from 1-10 to set sensitivity:");
+	if (Value != null) {
+	  return Value;
+	}
+  }
+  
+  function askMarker() {
+    Marker = null;
+	Marker = prompt("Enter marker ID:");
+	if (Marker != null) {
+	  return Marker;
+	}
+  }
+  
+  function askSubjectName() {
+    SubjectName = null;
+	SubjectName = prompt("Enter subject name:");
+	if (SubjectName != null) {
+	  return SubjectName;
+	}
+  }
+  
+  function askCity() {
+    City = null;
+	City = prompt("Enter city:");
+	if (City != null) {
+	  return City;
+	}
+  }
+  
+  function askCountryCode() {
+    CountryCode = null;
+	CountryCode = prompt("Enter country code such as GB for Great Britain:");
+	if (CountryCode != null) {
+	  return CountryCode;
+	}
+  }
+  
+  function askDoB() {
+    DoB = null;
+	DoB = prompt("Enter date of birth in the format YYYY-MM-DD:");
+	if (DoB != null) {
+	  return DoB;
+	}
+  }
+  
+  function askGender() {
+    Gender = null;
+	Gender = prompt("Enter gender 'M' for male, 'F' for female, or 'U' for unknown:");
+	if (Gender != null) {
+	  return Gender;
+	}
+  }
+  
+  function askAttribName() {
+    AttribName = null;
+	AttribName = prompt("Enter attribute name:");
+	if (AttribName != null) {
+	  return AttribName;
+	}
+  }
+  
+  function askAttribValue() {
+    AttribValue = null;
+	AttribValue = prompt("Enter attribute value:");
+	if (AttribValue != null) {
+	  return AttribValue;
+	}
+  }
+  
+  function askSubjects() {
+    Subject = null;
+	Subject = prompt("Enter subjects separated by commas in the format 'xxx','xxx' but using quotes instead:");
+	if (Subject != null) {
+	  return Subject;
+	}
+  }
+  
+  function askQueryType() {
+    QueryType = null;
+	QueryType = prompt("Type 'name' to query subjects by name or 'uid' to query subjects by uid:");
+	if (QueryType != null) {
+	  return QueryType;
+	}
+  }
+  
+  function askUID() {
+    UID = null;
+	UID = prompt("Enter subject uid to query:");
+	if (UID != null) {
+	  return UID;
+	}
+  }
+  
+  function askProfile() {
+    Profile = null;
+	Profile = prompt("Enter profile name:");
+	if (Profile != null) {
+	  return Profile;
+	}
+  }
+  
+  function askNewProfileName() {
+    ProfileNew = null;
+	ProfileNew = prompt("Enter a new profile name:");
+	if (ProfileNew != null) {
+	  return ProfileNew;
+	}
+  }
+  
+  function askDetection() {
+    Detection = null;
+	Detection = prompt("Enter detection info to fetch, 'mentalCommand' or 'facialExpression':");
+	if (Detection != null) {
+	  return Detection;
+	}
+  }
+  
+  function askStatusTRAIN() {
+    Status = null;
+	Status = prompt("Enter training status, 'start', 'accept', 'reject', 'reset', or 'erase':");
+	if (Status != null) {
+	  return Status;
+	}
+  }
+  
+  function askStatusGS() {
+    Status = null;
+	Status = prompt("Enter status 'get' or 'set':");
+	if (Status != null) {
+	  return Status;
+	}
+  }
+  
+  function askAction() {
+    Action = null;
+	Action = prompt("Choose action(s) for detection from the list returned by getDetectionInfo, e.g. 'push' or 'blink'. If multiple actions are chosen, separate with commas in this format 'xxx','xxx' but using quotes instead:");
+	if (Action != null) {
+	  return Action;
+	}
+  }
+  
+  function askSignature() {
+    Signature = null;
+	Signature = prompt("Enter signature 'universal' or 'trained':");
+	if (Signature != null) {
+	  return Signature;
+	}
+  }
+  
+  function askPS() {
+    PS = null;
+	PS = prompt("Select 'profile' or 'session':");
+	if (PS != null) {
+	  return PS;
+	}
+  }
+  
+  //CONDITIONAL doSend FUNCTIONS
+  function extendToken() {
+    askToken();
+	doSend(generateNewToken);
+  }
+  
+  function getUserInfo() {
+	askToken();
+	doSend(getUserInformation);
+  }
+  
+  function getLicenseInformation() {
+	askToken();
+	doSend(getLicenseInfo);
+  }
+  
+  function deviceControl() {
+    askCommand();
+	if (Command == ("connect" || "disconnect")) {
+	  askHeadset();
+	  doSend(controlDevice);
+	}
+	else if (Command == "refresh"){
+	doSend(controlDeviceRefresh);
+	}
+  }
+  
+  function headsetUpdate() {
+    askToken();
+	askHeadset();
+	askMode();
+	doSend(updateHeadset);
+  }
+  
+  function EPOCXheadband() {
+    askToken();
+	askHeadset();
+	askbandPosition();
+	doSend(updateHeadsetCustomInfo);
+  }
+  
+  function SessionCreate() {
+    askToken();
+	askHeadset();
+	askStatusOA();
+	doSend(createSession);
+  }
+  
+  function SessionUpdate() {
+    askToken();
+	askSession();
+	askStatusAC();
+	doSend(updateSession);
+  }
+  
+  function SessionQuery() {
+    askToken();
+	doSend(querySessions);
+  }
+  
+  function SubscribeData() {
+    askToken();
+	askSession();
+	askStreams();
+	doSend(subscribe);
+  }
+  
+  function UnsubscribeData() {
+    askToken();
+	askSession();
+	askStreams();
+	doSend(unsubscribe);
+  }
+  
+  function RecordCreate() {
+    askToken();
+	askSession();
+	askTitle();
+	askDesc();
+	doSend(createRecord);
+  }
+  
+  function RecordStop() {
+    askToken();
+	askSession();
+	doSend(stopRecord);
+  }
+  
+  function RecordUpdate() {
+    askToken();
+	askRecord();
+	askDesc();
+	doSend(updateRecord);
+  }
+  
+  function RecordDelete() {
+    askToken();
+	askRecords();
+	doSend(deleteRecord);
+  }
+  
+  function RecordExport() {
+    askToken();
+	askFolder();
+	askFormat();
+	askRecords();
+	askStreams();
+	if (Format == "CSV") {
+	  askVersion();
+	  doSend(exportRecordCSV);
+	}
+	else if (Format == "EDF") {
+	  doSend(exportRecordEDF);
+	}
+  }
+  
+  function RecordQuery() {
+    askToken();
+	askKeyword();
+	doSend(queryRecords);
+  }
+  
+  function getRecord() {
+    askToken();
+	askRecords();
+	doSend(getRecordInfos);
+  }
+  
+  function OptOutConfig() {
+    askToken();
+	askStatusOptOut();
+	if (Status == "get") {
+	  doSend(GetconfigOptOut);
+	}
+	else if (Status == "set") {
+	  doSend(SetconfigOptOut);
+	}
+  }
+  
+  function MarkerInject() {
+    askToken();
+	askLabel();
+	askSession();
+	askTime();
+	askValueMarker();
+	doSend(injectMarker);
+  }
+
+  function MarkerUpdate() {
+    askToken();
+	askSession();
+	askMarker();
+	askTime();
+	doSend(updateMarker);
+  }
+  
+  function SubjectCreate() {
+    askToken();
+	askSubjectName();
+	askCity();
+	askCountryCode();
+	askDoB();
+	askGender();
+	askAttribName();
+	askAttribValue();
+	doSend(createSubject);
+  }
+  
+  function SubjectUpdate() {
+    askToken();
+	askSubjectName();
+	askCity();
+	askCountryCode();
+	askDoB();
+	askGender();
+	askAttribName();
+	askAttribValue();
+	doSend(updateSubject);
+  }
+  
+  function SubjectDelete() {
+    askToken();
+	askSubjects();
+	doSend(deleteSubjects);
+  }
+  
+  function SubjectQuery() {
+    askQueryType();
+	askToken();
+	
+	if (QueryType == "name") {
+	  askSubjectName();
+	  doSend(querySubjectsName);
+	}
+	else if (QueryType == "uid") {
+	  askUID();
+	  doSend(querySubjectsUID);
+	}
+  }
+  
+  function GetDemographicsAttrib() {
+    askToken();
+	doSend(getDemographicAttributes);
+  }
+  
+  function QueryProfile() {
+    askToken();
+	doSend(queryProfile);
+  }
+  
+  function GetCurrentProfile() {
+    askToken();
+	askHeadset();
+	doSend(getCurrentProfile);
+  }
+  
+  function SetupProfile() {
+    askToken();
+	askStatusCLUSRD();
+	askProfile();
+	if (Status == "create" || "load" || "unload" || "save") {
+	  askHeadset();
+	  doSend(setupProfileCLUS);
+	}
+	else if (Status == "rename") {
+	  askNewProfileName();
+	  doSend(setupProfileRename);
+	}
+	else if (Status == "delete") {
+	  doSend(setupProfileDelete);
+	}
+  }
+  
+  function GuestProfile() {
+    askToken();
+	askHeadset();
+	doSend(loadGuestProfile);
+  }
+  
+  function GetDetectionInfo() {
+    askDetection;
+	doSend(getDetectionInfo);
+  }
+  
+  function Training() {
+    askToken();
+	askSession();
+	askDetection();
+	askStatusTRAIN();
+	askAction();
+	doSend(training);
+  }
+  
+  function GetTrainedSignatureActions() {
+    askToken();
+	askDetection();
+	askPS();
+	if (PS == "profile") {
+	  askProfile();
+	  doSend(getTrainedSignatureActionsProfile);
+	}
+	else if (PS == "session") {
+	  askSession();
+	  doSend(getTrainedSignatureActionsSession);
+	}
+  }
+  
+  function GetTrainingTime() {
+    askToken();
+	askDetection();
+	askSession();
+	doSend(getTrainingTime);
+  }
+  
+  function FacialExpressionSignatureType() {
+    askToken();
+	askProfile();
+	askSession();
+	askProfile();
+	askStatusGS();
+	if (Status == "get") {
+	  doSend(facialExpressionSignatureTypeGet);
+	}
+	else if (Status == "set") {
+	  askSignature();
+	  doSend(facialExpressionSignatureTypeSet);
+	}
+  }
+  
+  function FacialExpressionThreshold() {
+    askToken();
+	askProfile();
+	askSession();
+	askStatusGS();
+	askAction();
+	if (Status == "get") {
+	  doSend(facialExpressionThresholdGet);
+	}
+	else if (Status == "set") {
+	  askValueThreshold();
+	  doSend(facialExpressionThresholdSet);
+	}
+  }
+  
+  function MentalCommandActiveAction() {
+    askToken();
+	askProfile();
+	askSession();
+	askStatusGS();
+	if (Status == "get") {
+	  doSend(mentalCommandActiveActionGet);
+	}
+	if (Status == "set") {
+	  askAction();
+	  doSend(mentalCommandActiveActionSet);
+	}
+  }
+  
+  function MentalCommandBrainMap() {
+    askToken();
+	askProfile();
+	askSession();
+	doSend(mentalCommandBrainMap);
+  }
+  
+  function MentalCommandSkillRating() {
+    askToken();
+	askProfile();
+	askSession();
+	askAction();
+	doSend(mentalCommandGetSkillRating);
+  }
+  
+  function MentalCommandTrainingThreshold() {
+    askToken();
+	askProfile();
+	askSession();
+	doSend(mentalCommandTrainingThreshold);
+  }
+  
+  function MentalCommandActionSensitivity() {
+    askToken();
+	askProfile();
+	askSession();
+	askStatusGS();
+	if (Status == "get") {
+	  doSend(mentalCommandActionSensitivityGet);
+	}
+	else if (Status == "set") {
+	  askValueSensitivity();
+	  doSend(mentalCommandActionSensitivitySet);
+	}
+  }
+
+  window.addEventListener("load", init, false);	//THIS LINE OF CODE FROM WEBSOCKET.ORG
+
+  //WEBPAGE CONSOLE
+  </script>
+
+  <h1><p style="color: white;">EMOTIV EPOC X Brain Computer Interface - Cortex API WebSocket Link</h1>
+  <h2><p style="color: white;">Neural Interface Console V1.0</h2>
+  
+  <input id="OPEN" type="button" value="CONNECT" onclick="initiateWebSocket();" />
+  <input id="CLOSE" type="button" value="DISCONNECT" onclick="websocket.close();" />
+  
+  <br><h3><p style="color: white;">AUTHENTICATION</h3>
+  <input id="AUTH1" type="button" value="Fetch Cortex API Info" onclick="doSend(getCortexInfo);" />
+  <input id="AUTH2" type="button" value="Fetch User Login State" onclick="doSend(getUserLogin);" />
+  <input id="AUTH3" type="button" value="Request Cortex API Authentication" onclick="doSend(requestAccess);" />
+  <input id="AUTH4" type="button" value="Verify Cortex API Authentication" onclick="doSend(hasAccessRight);" />
+  <input id="AUTH5" type="button" value="Generate Access Token" onclick="doSend(authorize);" />
+  <input id="AUTH6" type="button" value="Extend Access Token" onclick="extendToken();" />
+  <input id="AUTH7" type="button" value="Fetch User Information" onclick="getUserInfo();" />
+  <input id="AUTH8" type="button" value="Fetch App License Information" onclick="getLicenseInformation();" />
+  
+  <br><h3><p style="color: white;">HEADSETS</h3>
+  <input id="HEAD1" type="button" value="Query Headsets" onclick="doSend(queryHeadsets);" />
+  <input id="HEAD2" type="button" value="Device Control" onclick="deviceControl();" />
+  <input id="HEAD3" type="button" value="Update Headset" onclick="headsetUpdate();" />
+  <input id="HEAD4" type="button" value="Update EPOC X Headband Position" onclick="EPOCXheadband();" />
+  
+  <br><h3><p style="color: white;">SESSIONS</h3>
+  <input id="SESS1" type="button" value="Session Creation" onclick="SessionCreate();" />
+  <input id="SESS2" type="button" value="Update Session" onclick="SessionUpdate();" />
+  <input id="SESS3" type="button" value="Query Sessions" onclick="SessionQuery();" />
+  
+  <br><h3><p style="color: white;">DATA SUBSCRIPTION</h3>
+  <input id="DATA1" type="button" value="Subscribe" onclick="SubscribeData();" />
+  <input id="DATA2" type="button" value="Unsubscribe" onclick="UnsubscribeData();" />
+  
+  <br><h3><p style="color: white;">RECORDS</h3>
+  <input id="REC1" type="button" value="Create Record" onclick="RecordCreate();" />
+  <input id="REC2" type="button" value="Stop Record" onclick="RecordStop();" />
+  <input id="REC3" type="button" value="Update Record" onclick="RecordUpdate();" />
+  <input id="REC4" type="button" value="Delete Records" onclick="RecordDelete();" />
+  <input id="REC5" type="button" value="Export Record" onclick="RecordExport();" />
+  <input id="REC6" type="button" value="Query Records" onclick="RecordQuery();" />
+  <input id="REC7" type="button" value="Fetch Record Infos" onclick="getRecord();" />
+  <input id="REC8" type="button" value="OptOut Configuration" onclick="OptOutConfig();" />
+  
+  <br><h3><p style="color: white;">MARKERS</h3>
+  <input id="MARK1" type="button" value="Inject Marker" onclick="MarkerInject();" />
+  <input id="MARK2" type="button" value="Update Marker" onclick="MarkerUpdate();" />
+  
+  <br><h3><p style="color: white;">SUBJECTS</h3>
+  <input id="SUB1" type="button" value="Create Subject" onclick="SubjectCreate();" />
+  <input id="SUB2" type="button" value="Update Subject" onclick="SubjectUpdate();" />
+  <input id="SUB3" type="button" value="Delete Subjects" onclick="SubjectDelete();" />
+  <input id="SUB4" type="button" value="Query Subjects" onclick="SubjectQuery();" />
+  <input id="SUB5" type="button" value="Fetch Demographic Attribute Objects" onclick="GetDemographicsAttrib();" />
+  
+  <br><h3><p style="color: white;">BCI</h3>
+  <input id="BCI1" type="button" value="Query Profiles" onclick="QueryProfile();" />
+  <input id="BCI2" type="button" value="Fetch Current Profile" onclick="GetCurrentProfile();" />
+  <input id="BCI3" type="button" value="Setup Profile" onclick="SetupProfile();" />
+  <input id="BCI4" type="button" value="Load Guest Profile" onclick="GuestProfile();" />
+  <input id="BCI5" type="button" value="Fetch Detection Info" onclick="GetDetectionInfo();" />
+  <input id="BCI6" type="button" value="Training" onclick="Training();" />
+  
+  <br><h3><p style="color: white;">ADVANCED BCI</h3>
+  <input id="ABCI1" type="button" value="Fetch Trained Signature Actions" onclick="GetTrainedSignatureActions();" />
+  <input id="ABCI2" type="button" value="Fetch Training Time" onclick="GetTrainingTime();" />
+  <input id="ABCI3" type="button" value="Get/Set Facial Expression Detection Signature" onclick="FacialExpressionSignatureType();" />
+  <input id="ABCI4" type="button" value="Get/Set Facial Expression Threshold" onclick="FacialExpressionThreshold();" />
+  <input id="ABCI5" type="button" value="Get/Set Mental Command Active Action" onclick="MentalCommandActiveAction();" />
+  <input id="ABCI6" type="button" value="Fetch Mental Command Profile Brain Map" onclick="MentalCommandBrainMap();" />
+  <input id="ABCI7" type="button" value="Fetch Mental Command Skill Rating" onclick="MentalCommandSkillRating();" />
+  <input id="ABCI8" type="button" value="Fetch Mental Command Training Threshold" onclick="MentalCommandTrainingThreshold();" />
+  <input id="ABCI9" type="button" value="Get/Set Mental Command Action Sensitivity" onclick="MentalCommandActionSensitivity();" />
+  
+  <br><br>
+  <input id="CLEAR" type="button" value="RESET" onclick="location.reload();" />
+  <h3><p style="color: blue;">CONSOLE LOG</h3>
+  <div id="output"></div>
+  
